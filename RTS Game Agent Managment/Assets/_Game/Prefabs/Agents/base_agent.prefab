@@ -59,6 +59,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8748c92df8a9def48926ecfd3568cf60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _speed: 5
+  OnTargetReached:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8918277605499255267
 GameObject:
   m_ObjectHideFlags: 0

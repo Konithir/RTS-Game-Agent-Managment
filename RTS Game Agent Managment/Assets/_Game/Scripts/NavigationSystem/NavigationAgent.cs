@@ -8,6 +8,7 @@ public class NavigationAgent : MonoBehaviour
     private float _speed;
 
     private Vector3? _currentTarget;
+    private float _initialTimeToTarget;
 
     public UnityEvent OnTargetReached;
 
@@ -23,27 +24,33 @@ public class NavigationAgent : MonoBehaviour
 
         if(transform.position == _currentTarget)
         {
-            OnTargetReached?.Invoke();
+            _initialTimeToTarget = 0;
             _currentTarget = null;
+
+            OnTargetReached?.Invoke();         
         }
     }
 
     private float CalculateTweenDuration(Vector3 destinationPoint)
     {
-        return Vector3.Distance(transform.position, destinationPoint) * _speed;
+        return Vector3.Distance(transform.position, destinationPoint) / _speed;
     }
 
-    public void GoTo(Transform transform)
+    public void GoTo(Transform targetTransform)
     {
-        _currentTarget = transform.position;
+        _currentTarget = targetTransform.position;
 
-        transform.DOMove(transform.position, CalculateTweenDuration(transform.position));
+        _initialTimeToTarget = CalculateTweenDuration(targetTransform.position);
+
+        transform.DOMove(targetTransform.position, _initialTimeToTarget);
     }
 
     public void GoTo(Vector3 point)
     {
         _currentTarget = point;
 
-        transform.DOMove(transform.position, CalculateTweenDuration(point));
+        _initialTimeToTarget = CalculateTweenDuration(point);
+
+        transform.DOMove(point, _initialTimeToTarget);
     }
 }
