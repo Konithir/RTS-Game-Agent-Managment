@@ -20,6 +20,11 @@ namespace NavigationSystem
 
         public UnityEvent OnTargetReached;
 
+        private void OnDisable()
+        {
+            StopMovement();
+        } 
+
         private void CheckForTargetReached()
         {
             if (_currentTarget == null)
@@ -48,6 +53,17 @@ namespace NavigationSystem
             return Quaternion.LookRotation((destinationPoint - transform.position).normalized).eulerAngles;
         }
 
+        private void HandleMovement(Vector3 point)
+        {
+            transform.DOMove(point, CalculateTweenMovementDuration(point)).SetEase(Ease.Linear).OnComplete(() => CheckForTargetReached());
+        }
+
+        private void HandleRotation(Vector3 point)
+        {
+            _temporaryRotation = GetRotationTowardsPoint(point);
+            transform.DORotate(_temporaryRotation, CalculateTweenRotationDuration(_temporaryRotation));
+        }
+
         public void GoTo(Transform targetTransform)
         {
             _currentTarget = targetTransform.position;
@@ -66,15 +82,9 @@ namespace NavigationSystem
             HandleRotation(point);
         }
 
-        private void HandleMovement(Vector3 point)
+        public void StopMovement()
         {
-            transform.DOMove(point, CalculateTweenMovementDuration(point)).SetEase(Ease.Linear).OnComplete(() => CheckForTargetReached());
-        }
-
-        private void HandleRotation(Vector3 point)
-        {
-            _temporaryRotation = GetRotationTowardsPoint(point);
-            transform.DORotate(_temporaryRotation, CalculateTweenRotationDuration(_temporaryRotation));
+            DOTween.Kill(transform);
         }
     }
 
