@@ -1,56 +1,81 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
+using Extensions;
 
-public class NavigationAgent : MonoBehaviour
+namespace NavigationSystem
 {
-    [SerializeField]
-    private float _speed;
 
-    private Vector3? _currentTarget;
-    private float _initialTimeToTarget;
-
-    public UnityEvent OnTargetReached;
-
-    private void Update()
+    public class NavigationAgent : MonoBehaviour
     {
-        CheckForTargetReached();
-    }
+        [SerializeField]
+        private float _speed = 5f;
 
-    private void CheckForTargetReached()
-    {
-        if (_currentTarget == null)
-            return;
+        [SerializeField]
+        private float _rotationSpeed = 5f;
 
-        if(transform.position == _currentTarget)
+        private Vector3? _currentTarget;
+
+        private Vector3 _temporaryRotation;
+
+        public UnityEvent OnTargetReached;
+
+        private void CheckForTargetReached()
         {
-            _initialTimeToTarget = 0;
-            _currentTarget = null;
+            if (_currentTarget == null)
+                return;
 
-            OnTargetReached?.Invoke();         
+            if (transform.position == _currentTarget)
+            {
+                _currentTarget = null;
+
+                OnTargetReached?.Invoke();
+            }
+        }
+
+        private float CalculateTweenMovementDuration(Vector3 destinationPoint)
+        {
+            return Vector3.Distance(transform.position, destinationPoint) / _speed;
+        }
+
+        private float CalculateTweenRotationDuration(Vector3 finalRotation)
+        {
+            return finalRotation.UnsignedDifference(transform.eulerAngles).y / _rotationSpeed;
+        }
+
+        private Vector3 GetRotationTowardsPoint(Vector3 destinationPoint)
+        {
+            return Quaternion.LookRotation((destinationPoint - transform.position).normalized).eulerAngles;
+        }
+
+        public void GoTo(Transform targetTransform)
+        {
+            _currentTarget = targetTransform.position;
+
+            HandleMovement(targetTransform.position);
+
+            HandleRotation(targetTransform.position);
+        }
+
+        public void GoTo(Vector3 point)
+        {
+            _currentTarget = point;
+
+            HandleMovement(point);
+
+            HandleRotation(point);
+        }
+
+        private void HandleMovement(Vector3 point)
+        {
+            transform.DOMove(point, CalculateTweenMovementDuration(point)).SetEase(Ease.Linear).OnComplete(() => CheckForTargetReached());
+        }
+
+        private void HandleRotation(Vector3 point)
+        {
+            _temporaryRotation = GetRotationTowardsPoint(point);
+            transform.DORotate(_temporaryRotation, CalculateTweenRotationDuration(_temporaryRotation));
         }
     }
 
-    private float CalculateTweenDuration(Vector3 destinationPoint)
-    {
-        return Vector3.Distance(transform.position, destinationPoint) / _speed;
-    }
-
-    public void GoTo(Transform targetTransform)
-    {
-        _currentTarget = targetTransform.position;
-
-        _initialTimeToTarget = CalculateTweenDuration(targetTransform.position);
-
-        transform.DOMove(targetTransform.position, _initialTimeToTarget);
-    }
-
-    public void GoTo(Vector3 point)
-    {
-        _currentTarget = point;
-
-        _initialTimeToTarget = CalculateTweenDuration(point);
-
-        transform.DOMove(point, _initialTimeToTarget);
-    }
 }

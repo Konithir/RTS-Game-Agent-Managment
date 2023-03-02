@@ -1,97 +1,103 @@
+using InputSystem;
 using UnityEngine;
 
-public class CharacterManager : MonoBehaviour
+namespace CharacterSystem
 {
-    [SerializeField]
-    private CharacterController[] _characterControllers;
 
-    [SerializeField]
-    private KeybindManager _keybindManager;
-
-    private CharacterController _temporaryCharacter;
-    private Vector3 _characterStartPosition = new Vector3(0, 0, 0);
-    private Vector3 _characterStartRotation = new Vector3(0, 0, 0);
-
-    private void Update()
+    public class CharacterManager : MonoBehaviour
     {
-        //Currently not used by CharacteController, may uncomment later
-        //ExecuteCharacterUpdate();
+        [SerializeField]
+        private CharacterController[] _characterControllers;
 
-        CheckForInput();
-    }
+        [SerializeField]
+        private KeybindManager _keybindManager;
 
-    private void CheckForInput()
-    {
-        if(Input.GetKeyUp(_keybindManager.AddCharacterKey))
+        private CharacterController _temporaryCharacter;
+        private Vector3 _characterStartPosition = new Vector3(0, 0, 0);
+        private Vector3 _characterStartRotation = new Vector3(0, 0, 0);
+
+        private void Update()
         {
-            ActivateCharacter();
+            //Currently not used by CharacteController, may uncomment later
+            //ExecuteCharacterUpdate();
+
+            CheckForInput();
         }
 
-        if (Input.GetKeyUp(_keybindManager.RemoveCharacterKey))
+        private void CheckForInput()
         {
-            DeactivateCharacter();
-        }
-
-        if (Input.GetKeyUp(_keybindManager.ClearSceneKey))
-        {
-            DeactivateAllCharacters();
-        }
-    }
-
-    private void ExecuteCharacterUpdate()
-    {
-        for(int i = 0; i < _characterControllers.Length; i++)
-        {
-            if(_characterControllers[i].gameObject.activeInHierarchy)
+            if (Input.GetKeyUp(_keybindManager.AddCharacterKey))
             {
-                _characterControllers[i].CustomUpdate();
+                ActivateCharacter();
             }
-        }
-    }
 
-    private CharacterController FindCharacter(bool active)
-    {
-        for (int i = 0; i < _characterControllers.Length; i++)
-        {
-            if (_characterControllers[i].gameObject.activeInHierarchy == active)
+            if (Input.GetKeyUp(_keybindManager.RemoveCharacterKey))
             {
-                return _characterControllers[i];
+                DeactivateCharacter();
+            }
+
+            if (Input.GetKeyUp(_keybindManager.ClearSceneKey))
+            {
+                DeactivateAllCharacters();
             }
         }
 
-        return null;
-    }
-
-    public void ActivateCharacter()
-    {
-        _temporaryCharacter = null;
-        _temporaryCharacter = FindCharacter(false);
-
-        if(_temporaryCharacter != null)
+        private void ExecuteCharacterUpdate()
         {
-            _temporaryCharacter.transform.position = _characterStartPosition;
-            _temporaryCharacter.transform.eulerAngles = _characterStartRotation;
-            _temporaryCharacter.gameObject.SetActive(true);
+            for (int i = 0; i < _characterControllers.Length; i++)
+            {
+                if (_characterControllers[i].gameObject.activeInHierarchy)
+                {
+                    _characterControllers[i].CustomUpdate();
+                }
+            }
         }
 
-    }
-
-    public void DeactivateCharacter()
-    {
-        _temporaryCharacter = null;
-        _temporaryCharacter = FindCharacter(true);
-
-        if (_temporaryCharacter != null)
+        private CharacterController FindCharacter(bool active)
         {
-            _temporaryCharacter.gameObject.SetActive(false);
+            for (int i = 0; i < _characterControllers.Length; i++)
+            {
+                if (_characterControllers[i].gameObject.activeInHierarchy == active)
+                {
+                    return _characterControllers[i];
+                }
+            }
+
+            return null;
         }
-    }
 
-    public void DeactivateAllCharacters()
-    {
-        for (int i = 0; i < _characterControllers.Length; i++)
+        public void ActivateCharacter()
         {
-            _characterControllers[i].gameObject.SetActive(false);
+            _temporaryCharacter = null;
+            _temporaryCharacter = FindCharacter(false);
+
+            if (_temporaryCharacter != null)
+            {
+                _temporaryCharacter.transform.position = _characterStartPosition;
+                _temporaryCharacter.transform.eulerAngles = _characterStartRotation;
+                _temporaryCharacter.gameObject.SetActive(true);
+            }
+
+        }
+
+        public void DeactivateCharacter()
+        {
+            _temporaryCharacter = null;
+            _temporaryCharacter = FindCharacter(true);
+
+            if (_temporaryCharacter != null)
+            {
+                _temporaryCharacter.gameObject.SetActive(false);
+            }
+        }
+
+        public void DeactivateAllCharacters()
+        {
+            for (int i = 0; i < _characterControllers.Length; i++)
+            {
+                _characterControllers[i].gameObject.SetActive(false);
+            }
         }
     }
 }
+

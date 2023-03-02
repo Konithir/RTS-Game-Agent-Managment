@@ -1,3 +1,16 @@
 {
-	"name": "NavigationSystem"
+    "name": "NavigationSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:42e78f55eecabb541bd70be525e64aeb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
