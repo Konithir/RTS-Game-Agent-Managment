@@ -2,7 +2,8 @@
     "name": "NavigationSystem",
     "rootNamespace": "",
     "references": [
-        "GUID:42e78f55eecabb541bd70be525e64aeb"
+        "GUID:42e78f55eecabb541bd70be525e64aeb",
+        "GUID:efa45043feb7e4147a305b73b5cea642"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
