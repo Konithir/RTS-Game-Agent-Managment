@@ -3,16 +3,15 @@ using UnityEngine;
 
 namespace CharacterSystem
 {
-
     public class CharacterManager : MonoBehaviour
     {
         [SerializeField]
-        private CharacterController[] _characterControllers;
+        private Base_CharacterController[] _characterControllers;
 
         [SerializeField]
         private KeybindManager _keybindManager;
 
-        private CharacterController _temporaryCharacter;
+        private Base_CharacterController _temporaryCharacter;
         private Vector3 _characterStartPosition = new Vector3(0, 0, 0);
         private Vector3 _characterStartRotation = new Vector3(0, 0, 0);
 
@@ -53,7 +52,7 @@ namespace CharacterSystem
             }
         }
 
-        private CharacterController FindCharacter(bool active)
+        private Base_CharacterController FindCharacter(bool active)
         {
             for (int i = 0; i < _characterControllers.Length; i++)
             {
@@ -77,7 +76,6 @@ namespace CharacterSystem
                 _temporaryCharacter.transform.eulerAngles = _characterStartRotation;
                 _temporaryCharacter.gameObject.SetActive(true);
             }
-
         }
 
         public void DeactivateCharacter()
